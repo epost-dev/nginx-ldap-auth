@@ -1,6 +1,7 @@
 FROM python:alpine3.14
 
 COPY nginx-ldap-auth-daemon.py /usr/src/app/
+COPY run.sh /usr/src/app/
 
 WORKDIR /usr/src/app/
 
@@ -14,4 +15,4 @@ RUN \
 
 EXPOSE 8888
 
-CMD ["python", "/usr/src/app/nginx-ldap-auth-daemon.py", "--host", "0.0.0.0", "--port", "8888"]
+CMD ["sh", "/usr/src/app/run.sh"]
