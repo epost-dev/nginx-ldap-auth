@@ -1,5 +1,4 @@
-ARG PYTHON_VERSION=2
-FROM python:${PYTHON_VERSION}-alpine
+FROM python:alpine3.14
 
 COPY nginx-ldap-auth-daemon.py /usr/src/app/
 
@@ -9,6 +8,7 @@ WORKDIR /usr/src/app/
 RUN \
     apk --no-cache add openldap-dev && \
     apk --no-cache add --virtual build-dependencies build-base && \
+    python -m pip install --upgrade pip && \
     pip install python-ldap && \
     apk del build-dependencies
 

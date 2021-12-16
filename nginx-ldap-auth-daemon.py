@@ -145,9 +145,9 @@ class AuthHandler(BaseHTTPRequestHandler):
         else:
             user = self.ctx['user']
 
-        sys.stdout.write("%s - %s [%s] %s\n" % (addr, user,
-                         self.log_date_time_string(), format % args))
-        sys.stdout.flush()
+        print("%s - %s [%s] %s" % (addr, user,
+                         self.log_date_time_string(), format % args),
+                         flush=True)
 
     def log_error(self, format, *args):
         self.log_message(format, *args)
@@ -280,9 +280,9 @@ def exit_handler(signal, frame):
             os.unlink(Listen)
         except:
             ex, value, trace = sys.exc_info()
-            sys.stderr.write('Failed to remove socket "%s": %s\n' %
-                             (Listen, str(value)))
-            sys.stderr.flush()
+            print('Failed to remove socket "%s": %s\n' %
+                             (Listen, str(value)),
+                             file=sys.stderr, flush=True)
     sys.exit(0)
 
 if __name__ == '__main__':
@@ -335,11 +335,13 @@ if __name__ == '__main__':
              'bindpasswd': ('X-Ldap-BindPass', args.bindpw),
              'cookiename': ('X-CookieName', args.cookie)
     }
+    for key, value in auth_params.items():
+        print( key + ': ' + "%s" %(value,), flush=True)
+    
     LDAPAuthHandler.set_params(auth_params)
     server = AuthHTTPServer(Listen, LDAPAuthHandler)
     signal.signal(signal.SIGINT, exit_handler)
     signal.signal(signal.SIGTERM, exit_handler)
 
-    sys.stdout.write("Start listening on %s:%d...\n" % Listen)
-    sys.stdout.flush()
+    print("Start listening on %s:%d...\n" % (Listen), flush=True)
     server.serve_forever()
