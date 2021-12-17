@@ -216,6 +216,11 @@ class LDAPAuthHandler(AuthHandler):
             # use of LDAPv3 (RFC2830).
             ldap_obj.protocol_version=ldap.VERSION3
 
+            # If we use LDAPS or STARTTLS we need to initialize the ca certs 
+            # to get the server cert successfully verified
+            ldap_obj.set_option(ldap.OPT_X_TLS_CACERTFILE, '/etc/ssl/certs/cacerts.pem')
+            ldap_obj.set_option(ldap.OPT_X_TLS_NEWCTX, 0)
+
             # Establish a STARTTLS connection if required by the
             # headers.
             if ctx['starttls'] == 'true':
